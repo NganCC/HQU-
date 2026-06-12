@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}{% if article %}编辑文章{% else %}发布文章{% endif %} - 宣传管理{% endblock %}
+{% block page_title %}宣传管理 - {% if article %}编辑文章{% else %}发布文章{% endif %}{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white fw-bold">{% if article %}编辑文章{% else %}发布新文章{% endif %}</div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('publicity.save') }}">
+                    {% if article %}
+                    <input type="hidden" name="article_id" value="{{ article[0] }}">
+                    {% endif %}
+                    <div class="mb-3">
+                        <label class="form-label">文章标题 <span class="text-danger">*</span></label>
+                        <input type="text" name="title" class="form-control" value="{{ article[1] if article else '' }}" placeholder="请输入文章标题" required>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">作者院系</label>
+                            <select name="dept_id" class="form-select">
+                                <option value="">-- 选择院系 --</option>
+                                {% for d in departments %}
+                                <option value="{{ d[0] }}" {% if article and article[3] == d[0] %}selected{% endif %}>{{ d[1] }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">作者姓名</label>
+                            <input type="text" name="author" class="form-control" value="{{ article[4] if article else '管理员' }}">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">文章内容 <span class="text-danger">*</span></label>
+                        <textarea name="content" class="form-control" rows="12" placeholder="请输入文章内容..." required>{{ article[2] if article else '' }}</textarea>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-lg"></i> {% if article %}保存修改{% else %}发布文章{% endif %}
+                        </button>
+                        <a href="{{ url_for('publicity.list_view') }}" class="btn btn-outline-secondary">返回列表</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

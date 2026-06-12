@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}物品管理 - 后勤管理{% endblock %}
+{% block page_title %}后勤管理 - 物品管理{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <span class="fw-bold">物品列表</span>
+                <span class="badge bg-primary">{{ rows|length }} 项</span>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th><th>物品名称</th><th>数量</th><th>单位</th>
+                                <th>状态</th><th>备注</th><th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in rows %}
+                            <tr>
+                                <td>{{ row[0] }}</td>
+                                <td><strong>{{ row[1] }}</strong></td>
+                                <td>
+                                    {% if row[2] <= 3 %}<span class="text-danger fw-bold">{{ row[2] }}</span>
+                                    {% else %}{{ row[2] }}{% endif %}
+                                </td>
+                                <td>{{ row[3] }}</td>
+                                <td>
+                                    {% if row[4] == '正常' %}<span class="badge bg-success">正常</span>
+                                    {% elif row[4] == '不足' %}<span class="badge bg-warning text-dark">不足</span>
+                                    {% else %}<span class="badge bg-danger">{{ row[4] }}</span>{% endif %}
+                                </td>
+                                <td><small>{{ row[5] or '-' }}</small></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-warning" onclick="editItem({{ row[0] }}, '{{ row[1] }}', {{ row[2] }}, '{{ row[3] }}', '{{ row[4] }}', '{{ row[5] or '' }}')">编辑</button>
+                                    <a href="{{ url_for('logistics.item_delete', item_id=row[0]) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('确认删除该物品？')">删除</a>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="7" class="text-center text-muted py-3">暂无物品记录</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white fw-bold" id="formTitle">新增物品</div>
+            <div class="card-body">
+                <form method="POST" id="itemForm" action="{{ url_for('logistics.item_add') }}">
+                    <input type="hidden" name="item_id" id="itemId" value="">
+                    <div class="mb-3">
+                        <label class="form-label">物品名称</label>
+                        <input type="text" name="item_name" id="itemName" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">数量</label>
+                        <input type="number" name="quantity" id="itemQty" class="form-control" min="0" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">单位</label>
+                        <input type="text" name="unit" id="itemUnit" class="form-control" value="个">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">状态</label>
+                        <select name="status" id="itemStatus" class="form-select">
+                            <option>正常</option>
+                            <option>不足</option>
+                            <option>损坏</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">备注</label>
+                        <input type="text" name="remark" id="itemRemark" class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100" id="submitBtn">添加物品</button>
+                    <button type="button" class="btn btn-outline-secondary w-100 mt-2 d-none" id="cancelBtn" onclick="resetForm()">取消编辑</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+function editItem(id, name, qty, unit, status, remark) {
+    document.getElementById('formTitle').textContent = '编辑物品';
+    document.getElementById('itemId').value = id;
+    document.getElementById('itemName').value = name;
+    document.getElementById('itemQty').value = qty;
+    document.getElementById('itemUnit').value = unit;
+    document.getElementById('itemStatus').value = status;
+    document.getElementById('itemRemark').value = remark;
+    document.getElementById('submitBtn').textContent = '保存修改';
+    document.getElementById('cancelBtn').classList.remove('d-none');
+    document.getElementById('itemForm').action = "{{ url_for('logistics.item_edit') }}";
+}
+function resetForm() {
+    document.getElementById('formTitle').textContent = '新增物品';
+    document.getElementById('itemId').value = '';
+    document.getElementById('itemForm').reset();
+    document.getElementById('submitBtn').textContent = '添加物品';
+    document.getElementById('cancelBtn').classList.add('d-none');
+    document.getElementById('itemForm').action = "{{ url_for('logistics.item_add') }}";
+}
+</script>
+{% endblock %}

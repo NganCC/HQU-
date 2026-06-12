@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}校运动会管理系统{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="d-flex" id="wrapper">
+        <!-- 侧边栏 -->
+        <div class="bg-dark text-white" id="sidebar">
+            <div class="sidebar-heading text-center py-3 fs-5 fw-bold border-bottom border-secondary">
+                <i class="bi bi-trophy-fill"></i> 校运动会管理
+            </div>
+            <div class="list-group list-group-flush">
+                <a href="{{ url_for('index') }}" class="list-group-item list-group-item-action bg-dark text-white border-secondary">
+                    <i class="bi bi-speedometer2 me-2"></i> <span>首页仪表盘</span>
+                </a>
+                <a href="{{ url_for('athlete.list_view') }}" class="list-group-item list-group-item-action bg-dark text-white border-secondary">
+                    <i class="bi bi-person-badge me-2"></i> <span>运动员管理</span>
+                </a>
+                <a href="{{ url_for('competition.list_view') }}" class="list-group-item list-group-item-action bg-dark text-white border-secondary">
+                    <i class="bi bi-calendar-event me-2"></i> <span>比赛管理</span>
+                </a>
+                <div class="list-group-item bg-dark text-white border-secondary fw-bold small">
+                    <i class="bi bi-clipboard-check me-2"></i> <span>教练管理</span>
+                </div>
+                <a href="{{ url_for('coach.list_view') }}" class="list-group-item list-group-item-action bg-dark text-white border-secondary ps-4">
+                    <i class="bi bi-arrow-return-right me-1"></i> <span>裁判场次分配</span>
+                </a>
+                <a href="{{ url_for('coach.scoring') }}" class="list-group-item list-group-item-action bg-dark text-white border-secondary ps-4">
+                    <i class="bi bi-pencil-square me-1"></i> <span>计分确认</span>
+                </a>
+                <div class="list-group-item bg-dark text-white border-secondary fw-bold small">
+                    <i class="bi bi-box-seam me-2"></i> <span>后勤管理</span>
+                </div>
+                <a href="{{ url_for('logistics.items') }}" class="list-group-item list-group-item-action bg-dark text-white border-secondary ps-4">
+                    <i class="bi bi-box me-1"></i> <span>物品管理</span>
+                </a>
+                <a href="{{ url_for('logistics.staff') }}" class="list-group-item list-group-item-action bg-dark text-white border-secondary ps-4">
+                    <i class="bi bi-people me-1"></i> <span>人员管理</span>
+                </a>
+                <a href="{{ url_for('logistics.schedule') }}" class="list-group-item list-group-item-action bg-dark text-white border-secondary ps-4">
+                    <i class="bi bi-clock me-1"></i> <span>值班管理</span>
+                </a>
+                <div class="list-group-item bg-dark text-white border-secondary fw-bold small">
+                    <i class="bi bi-megaphone me-2"></i> <span>宣传管理</span>
+                </div>
+                <a href="{{ url_for('publicity.list_view') }}" class="list-group-item list-group-item-action bg-dark text-white border-secondary ps-4">
+                    <i class="bi bi-newspaper me-1"></i> <span>文章列表</span>
+                </a>
+                <a href="{{ url_for('publicity.edit') }}" class="list-group-item list-group-item-action bg-dark text-white border-secondary ps-4">
+                    <i class="bi bi-pen me-1"></i> <span>发布文章</span>
+                </a>
+                <div class="list-group-item bg-dark text-white border-secondary fw-bold small">
+                    <i class="bi bi-bar-chart me-2"></i> <span>积分排行</span>
+                </div>
+                <a href="{{ url_for('score.personal') }}" class="list-group-item list-group-item-action bg-dark text-white border-secondary ps-4">
+                    <i class="bi bi-person-lines-fill me-1"></i> <span>个人排行</span>
+                </a>
+                <a href="{{ url_for('score.department') }}" class="list-group-item list-group-item-action bg-dark text-white border-secondary ps-4">
+                    <i class="bi bi-building me-1"></i> <span>院系排行</span>
+                </a>
+            </div>
+        </div>
+        <!-- 主内容区 -->
+        <div id="page-content-wrapper" class="flex-grow-1">
+            <!-- 顶部栏 -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom px-3">
+                <div class="container-fluid">
+                    <span class="navbar-brand mb-0 h1">{% block page_title %}校运动会管理系统{% endblock %}</span>
+                    <span class="text-muted small">当前时间：<span id="current-time"></span></span>
+                </div>
+            </nav>
+            <!-- 内容区 -->
+            <div class="container-fluid p-4">
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    {% for msg in messages %}{{ msg }}{% endfor %}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                {% endif %}
+                {% endwith %}
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function updateTime() {
+            var now = new Date();
+            document.getElementById('current-time').textContent =
+                now.getFullYear() + '-' +
+                ('0' + (now.getMonth() + 1)).slice(-2) + '-' +
+                ('0' + now.getDate()).slice(-2) + ' ' +
+                ('0' + now.getHours()).slice(-2) + ':' +
+                ('0' + now.getMinutes()).slice(-2) + ':' +
+                ('0' + now.getSeconds()).slice(-2);
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

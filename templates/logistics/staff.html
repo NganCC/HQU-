@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}人员管理 - 后勤管理{% endblock %}
+{% block page_title %}后勤管理 - 人员管理{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <span class="fw-bold">后勤人员列表</span>
+                <span class="badge bg-primary">{{ rows|length }} 人</span>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th><th>姓名</th><th>电话</th>
+                                <th>职责</th><th>状态</th><th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in rows %}
+                            <tr>
+                                <td>{{ row[0] }}</td>
+                                <td><strong>{{ row[1] }}</strong></td>
+                                <td>{{ row[2] or '-' }}</td>
+                                <td>{{ row[3] or '-' }}</td>
+                                <td>
+                                    {% if row[4] == '在岗' %}<span class="badge bg-success">在岗</span>
+                                    {% else %}<span class="badge bg-secondary">{{ row[4] }}</span>{% endif %}
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-warning" onclick="editStaff({{ row[0] }}, '{{ row[1] }}', '{{ row[2] or '' }}', '{{ row[3] or '' }}', '{{ row[4] }}')">编辑</button>
+                                    <a href="{{ url_for('logistics.staff_delete', staff_id=row[0]) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('确认删除该人员？')">删除</a>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="6" class="text-center text-muted py-3">暂无人员记录</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white fw-bold" id="sfTitle">新增人员</div>
+            <div class="card-body">
+                <form method="POST" id="staffForm" action="{{ url_for('logistics.staff_add') }}">
+                    <input type="hidden" name="staff_id" id="staffId" value="">
+                    <div class="mb-3">
+                        <label class="form-label">姓名</label>
+                        <input type="text" name="name" id="sfName" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">电话</label>
+                        <input type="text" name="phone" id="sfPhone" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">职责</label>
+                        <select name="role" id="sfRole" class="form-select">
+                            <option>场地布置</option>
+                            <option>物资发放</option>
+                            <option>引导员</option>
+                            <option>医疗支持</option>
+                            <option>其他</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">状态</label>
+                        <select name="status" id="sfStatus" class="form-select">
+                            <option>在岗</option>
+                            <option>休息</option>
+                            <option>请假</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100" id="sfSubmitBtn">添加人员</button>
+                    <button type="button" class="btn btn-outline-secondary w-100 mt-2 d-none" id="sfCancelBtn" onclick="sfResetForm()">取消编辑</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+function editStaff(id, name, phone, role, status) {
+    document.getElementById('sfTitle').textContent = '编辑人员';
+    document.getElementById('staffId').value = id;
+    document.getElementById('sfName').value = name;
+    document.getElementById('sfPhone').value = phone;
+    document.getElementById('sfRole').value = role;
+    document.getElementById('sfStatus').value = status;
+    document.getElementById('sfSubmitBtn').textContent = '保存修改';
+    document.getElementById('sfCancelBtn').classList.remove('d-none');
+    document.getElementById('staffForm').action = "{{ url_for('logistics.staff_edit') }}";
+}
+function sfResetForm() {
+    document.getElementById('sfTitle').textContent = '新增人员';
+    document.getElementById('staffId').value = '';
+    document.getElementById('staffForm').reset();
+    document.getElementById('sfSubmitBtn').textContent = '添加人员';
+    document.getElementById('sfCancelBtn').classList.add('d-none');
+    document.getElementById('staffForm').action = "{{ url_for('logistics.staff_add') }}";
+}
+</script>
+{% endblock %}

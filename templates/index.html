@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% block title %}首页仪表盘 - 校运动会管理系统{% endblock %}
+{% block page_title %}📊 首页仪表盘{% endblock %}
+{% block content %}
+<!-- 统计卡片 -->
+<div class="row g-4 mb-5">
+    <div class="col-xl-3 col-md-6">
+        <div class="card border-primary shadow-sm h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-2 text-uppercase fw-bold small">运动员总数</h6>
+                        <h2 class="mb-0">{{ stats.athlete_count }}</h2>
+                        <small class="text-success"><i class="bi bi-arrow-up"></i> 活跃参与</small>
+                    </div>
+                    <div class="fs-1 text-primary opacity-25"><i class="bi bi-person-badge"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card border-success shadow-sm h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-2 text-uppercase fw-bold small">比赛场次</h6>
+                        <h2 class="mb-0">{{ stats.session_count }}</h2>
+                        <small class="text-info"><i class="bi bi-calendar-check"></i> 精彩赛程</small>
+                    </div>
+                    <div class="fs-1 text-success opacity-25"><i class="bi bi-calendar-event"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card border-info shadow-sm h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-2 text-uppercase fw-bold small">院系数</h6>
+                        <h2 class="mb-0">{{ stats.dept_count }}</h2>
+                        <small class="text-primary"><i class="bi bi-building"></i> 团队协作</small>
+                    </div>
+                    <div class="fs-1 text-info opacity-25"><i class="bi bi-building"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card border-warning shadow-sm h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-2 text-uppercase fw-bold small">比赛项目</h6>
+                        <h2 class="mb-0">{{ stats.event_count }}</h2>
+                        <small class="text-warning"><i class="bi bi-trophy"></i> 多样竞技</small>
+                    </div>
+                    <div class="fs-1 text-warning opacity-25"><i class="bi bi-trophy"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 功能模块和项目信息 -->
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white fw-bold">
+                <i class="bi bi-grid-3x3-gap-fill me-2"></i>系统模块导航
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4 col-sm-6">
+                        <a href="{{ url_for('athlete.list_view') }}" class="btn btn-outline-primary w-100 py-4">
+                            <i class="bi bi-person-badge d-block fs-2 mb-2"></i>
+                            <span class="fw-bold">运动员管理</span>
+                        </a>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <a href="{{ url_for('competition.list_view') }}" class="btn btn-outline-success w-100 py-4">
+                            <i class="bi bi-calendar-event d-block fs-2 mb-2"></i>
+                            <span class="fw-bold">比赛管理</span>
+                        </a>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <a href="{{ url_for('coach.list_view') }}" class="btn btn-outline-info w-100 py-4">
+                            <i class="bi bi-clipboard-check d-block fs-2 mb-2"></i>
+                            <span class="fw-bold">教练/裁判</span>
+                        </a>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <a href="{{ url_for('logistics.items') }}" class="btn btn-outline-warning w-100 py-4">
+                            <i class="bi bi-box-seam d-block fs-2 mb-2"></i>
+                            <span class="fw-bold">后勤管理</span>
+                        </a>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <a href="{{ url_for('publicity.list_view') }}" class="btn btn-outline-danger w-100 py-4">
+                            <i class="bi bi-megaphone d-block fs-2 mb-2"></i>
+                            <span class="fw-bold">宣传管理</span>
+                        </a>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <a href="{{ url_for('score.personal') }}" class="btn btn-outline-secondary w-100 py-4">
+                            <i class="bi bi-bar-chart d-block fs-2 mb-2"></i>
+                            <span class="fw-bold">积分排行</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white fw-bold">
+                <i class="bi bi-info-circle-fill me-2"></i>项目信息
+            </div>
+            <div class="card-body">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item border-0 px-0">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted"><i class="bi bi-code-slash me-2"></i>技术栈</span>
+                            <span class="badge bg-primary">Flask + Bootstrap</span>
+                        </div>
+                    </div>
+                    <div class="list-group-item border-0 px-0">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted"><i class="bi bi-database me-2"></i>数据库</span>
+                            <span class="badge bg-success">MySQL 8.0</span>
+                        </div>
+                    </div>
+                    <div class="list-group-item border-0 px-0">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted"><i class="bi bi-diagram-3 me-2"></i>架构</span>
+                            <span class="badge bg-info">Blueprint模式</span>
+                        </div>
+                    </div>
+                    <div class="list-group-item border-0 px-0">
+                        <small class="text-muted">
+                            <i class="bi bi-lightbulb me-1"></i>
+                            提示：数据库初始化后可使用全部功能
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
